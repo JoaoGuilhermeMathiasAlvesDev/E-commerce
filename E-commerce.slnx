@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Api/">
+    <Project Path="ApiEcommerce/ApiEcommerce.csproj" Id="1eb38ed7-0a88-4b40-86aa-c90121eb5dfc" />
+  </Folder>
+  <Folder Name="/Dominio/">
+    <Project Path="DominioEcommerce/DominioEcommerce.csproj" />
+  </Folder>
+  <Folder Name="/Infrectetura.Ioc/">
+    <Project Path="Infrectetura.Ioc/Infrectetura.Ioc.csproj" Id="a0bfb9a5-c829-4ada-b24c-1f84b8feddd8" />
+  </Folder>
+  <Folder Name="/Repository/">
+    <Project Path="RepositoryEcommerce/RepositoryEcommerce.csproj" Id="c23938d1-263b-4efc-9342-1241888ea2ab" />
+  </Folder>
+  <Folder Name="/Services/">
+    <Project Path="Services.Ecommerce/Services.Ecommerce.csproj" Id="4b08586e-cf7a-4222-b7b9-b8c00482529f" />
+  </Folder>
+</Solution>
