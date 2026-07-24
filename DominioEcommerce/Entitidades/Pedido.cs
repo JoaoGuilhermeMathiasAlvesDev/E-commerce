@@ -59,23 +59,33 @@ namespace DominioEcommerce.Entitidades
             if (enderecoEntrega == null)
                 throw new DominioException.DominioException("O endereço de entrega é obrigatório.",
                     new List<string> { "O endereço de entrega é obrigatório." });
-
-            if (valorFrete < 0)
-                throw new ArgumentOutOfRangeException(nameof(valorFrete), "O valor do frete não pode ser negativo.");
-
             
             ClienteId = clienteId; 
             NomeCliente = nomeCliente.Trim();
             TelefoneCliente = telefoneCliente?.Trim() ?? string.Empty;
             EmailCliente = emailCliente.Trim();
             EnderecoEntrega = enderecoEntrega;
-            ValorFrete = valorFrete;
+            AtualizarFrete(valorFrete);
             MetodoPagamento = metodoPagamento;
             ObservacoesEntrega = observacoesEntrega?.Trim();
 
             Status = StatusPedidos.Pendente;
             Subtotal = 0;
         }
+
+        public void AtualizarFrete(decimal novoValorFrete)
+        {
+            if (Status != StatusPedidos.Pendente)
+                throw new DominioException.DominioException("Não é possível alterar o frete de um pedido não pendente.",
+                    new List<string> { "Pedido não está pendente." });
+
+            if (novoValorFrete < 0)
+                throw new DominioException.DominioException("O valor do frete não pode ser negativo.",
+                    new List<string> { "Valor do frete inválido." });
+
+            ValorFrete = novoValorFrete;
+        }
+
 
         public void AdicionarItem(ItemPedido item)
         {

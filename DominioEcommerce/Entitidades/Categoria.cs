@@ -43,7 +43,11 @@ namespace DominioEcommerce.Entitidades
                 throw new DominioException.DominioException("Produto não pode ser nulo.",
                     new List<string> { "Produto não pode ser nulo." });
             }
-            _produtos.Add(produto);
+
+            if (!_produtos.Contains(produto))
+            {
+                _produtos.Add(produto);
+            }
         }
 
         public void Ativar() => Ativo = true;
