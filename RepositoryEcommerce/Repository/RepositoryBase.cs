@@ -1,4 +1,5 @@
 ﻿using DominioEcommerce.EntityBase;
+using RepositoryEcommerce.Context;
 using RepositoryEcommerce.IRepository;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,13 @@ namespace RepositoryEcommerce.Repository
 {
     public class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : EntityBase
     {
+        private ContextEcommerce  _context;
+
+        public RepositoryBase(ContextEcommerce context)
+        {
+            _context = context;
+        }
+
         public Task Adicionar(TEntity obj)
         {
             throw new NotImplementedException();
