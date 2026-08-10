@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace DominioEcommerce.Entitidades
@@ -18,26 +19,23 @@ namespace DominioEcommerce.Entitidades
         public decimal LarguraCm { get; private set; }
         public decimal ComprimentoCm { get; private set; }
 
+        private readonly List<CategoriaProduto> _categoriaProdutos = new();
 
-        public Guid CategoriaId { get; private set; }
-
-
-        public Categoria? Categoria { get; private set; }
-
+        public IReadOnlyCollection<CategoriaProduto> CategoriaProdutos => _categoriaProdutos.AsReadOnly();
 
         protected Produto()
         {
         }
 
         public Produto(string nome, string descricao, decimal preco, int estoque, string urlImagem,
-                       decimal pesoGramas, decimal alturaCm, decimal larguraCm, decimal comprimentoCm, Guid categoriaId)
+                       decimal pesoGramas, decimal alturaCm, decimal larguraCm, decimal comprimentoCm)
         {
-            ValidarEInicializar(nome, descricao, preco, estoque, urlImagem, pesoGramas, alturaCm, larguraCm, comprimentoCm, categoriaId);
+            ValidarEInicializar(nome, descricao, preco, estoque, urlImagem, pesoGramas, alturaCm, larguraCm, comprimentoCm);
         }
 
 
         private void ValidarEInicializar(string nome, string descricao, decimal preco, int estoque, string urlImagem,
-                                         decimal pesoGramas, decimal alturaCm, decimal larguraCm, decimal comprimentoCm, Guid categoriaId)
+                                         decimal pesoGramas, decimal alturaCm, decimal larguraCm, decimal comprimentoCm)
         {
             if (string.IsNullOrWhiteSpace(nome))
                 throw new DominioException.DominioException("O nome do produto não pode ser vazio.", new List<string> { "O nome do produto não pode ser vazio." });
@@ -48,7 +46,6 @@ namespace DominioEcommerce.Entitidades
             if (alturaCm <= 0) throw new ArgumentOutOfRangeException(nameof(alturaCm), "A altura deve ser maior que zero.");
             if (larguraCm <= 0) throw new ArgumentOutOfRangeException(nameof(larguraCm), "A largura deve ser maior que zero.");
             if (comprimentoCm <= 0) throw new ArgumentOutOfRangeException(nameof(comprimentoCm), "O comprimento deve ser maior que zero.");
-            if (categoriaId == Guid.Empty) throw new ArgumentException("O ID da categoria é obrigatório.");
 
             Nome = nome.Trim();
             Descricao = descricao?.Trim() ?? string.Empty;
@@ -59,7 +56,6 @@ namespace DominioEcommerce.Entitidades
             AlturaCm = alturaCm;
             LarguraCm = larguraCm;
             ComprimentoCm = comprimentoCm;
-            CategoriaId = categoriaId;
         }
 
 
@@ -96,6 +92,15 @@ namespace DominioEcommerce.Entitidades
             }
 
             Estoque -= quantidade;
+        }
+
+        public void AdicionarCategoria(Guid categoriaId)
+        {
+            if (categoriaId == Guid.Empty)
+                throw new ArgumentException("O ID da categoria não pode ser vazio.", nameof(categoriaId));
+            if (_categoriaProdutos.Exists(cp => cp.CategoriaId == categoriaId))
+                return;
+            _categoriaProdutos.Add(new CategoriaProduto(categoriaId, this.Id));
         }
 
         public void AtualizarDadosPrincipais(string nome, string descricao, string urlImagem)

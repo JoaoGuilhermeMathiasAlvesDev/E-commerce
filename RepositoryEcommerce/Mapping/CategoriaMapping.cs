@@ -22,14 +22,13 @@ namespace RepositoryEcommerce.Mapping
                    .HasDefaultValue(true);
 
             // Relacionamento 1 : N com Produtos
-            builder.HasMany(c => c.Produtos)
-                   .WithOne() // Ou .WithOne(p => p.Categoria) se a entidade Produto tiver a propriedade Categoria
-                   .HasForeignKey("CategoriaId")
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            // Mapeamento para o backing-field privado _produtos
-            builder.Metadata.FindNavigation(nameof(Categoria.Produtos))!
-                   .SetPropertyAccessMode(PropertyAccessMode.Field);
+            builder.HasMany(c => c.CategoriaProdutos)
+              .WithOne(cp => cp.Categoria)
+                .HasForeignKey(cp => cp.CategoriaId);
+            
+            // Indica ao EF Core para acessar via backing field
+            builder.Navigation(c => c.CategoriaProdutos)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
 
             // Índices de busca
             builder.HasIndex(c => c.Nome);

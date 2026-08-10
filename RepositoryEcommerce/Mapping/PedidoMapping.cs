@@ -98,14 +98,10 @@ namespace RepositoryEcommerce.Mapping
             builder.Metadata.FindNavigation(nameof(Pedido.Itens))!
                    .SetPropertyAccessMode(PropertyAccessMode.Field);
 
-            builder.HasOne(p => p.Cliente)
-                   .WithMany()
-                   .HasForeignKey(p => p.ClienteId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            
-            builder.HasIndex(p => p.ClienteId);
-            builder.HasIndex(p => p.Status);
+            builder.HasOne(p => p.Cliente)          // O Pedido tem UM Cliente
+               .WithMany(c => c.Pedidos)        // O Cliente tem MUITOS Pedidos
+               .HasForeignKey(p => p.ClienteId) // A chave estrangeira oficial é ClienteId
+               .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

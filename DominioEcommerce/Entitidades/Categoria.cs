@@ -9,9 +9,9 @@ namespace DominioEcommerce.Entitidades
         public string Nome { get; private set; } = string.Empty;
         public bool Ativo { get; private set; } = true;
 
-        private List<Produto> _produtos = new();
+        private readonly List<CategoriaProduto> _categoriaProdutos = new();
 
-        public IReadOnlyCollection<Produto> Produtos => _produtos.AsReadOnly();
+        public IReadOnlyCollection<CategoriaProduto> CategoriaProdutos => _categoriaProdutos.AsReadOnly();
 
         protected Categoria()
         {
@@ -36,18 +36,20 @@ namespace DominioEcommerce.Entitidades
             Ativo = ativo;
         }
 
-        public void AdicionarProduto(Produto produto)
+        public void AdicionarCategoria(Guid categoriaId)
         {
-            if (produto == null)
-            {
-                throw new DominioException.DominioException("Produto não pode ser nulo.",
-                    new List<string> { "Produto não pode ser nulo." });
-            }
+            if (categoriaId == Guid.Empty)
+                throw new ArgumentException("O ID da categoria não pode ser vazio.", nameof(categoriaId));
 
-            if (!_produtos.Contains(produto))
-            {
-                _produtos.Add(produto);
-            }
+            if (_categoriaProdutos.Exists(cp => cp.CategoriaId == categoriaId))
+                return;
+
+            _categoriaProdutos.Add(new CategoriaProduto(categoriaId, this.Id));
+        }
+
+        public void RemoverCategoria(Guid categoriaId)
+        {
+            _categoriaProdutos.RemoveAll(cp => cp.CategoriaId == categoriaId);
         }
 
         public void Ativar() => Ativo = true;

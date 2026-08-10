@@ -58,15 +58,14 @@ namespace RepositoryEcommerce.Mapping
                    .IsRequired()
                    .HasColumnType("decimal(18,2)");
 
-            
-            builder.HasOne(p => p.Categoria)
-                   .WithMany()
-                   .HasForeignKey(p => p.CategoriaId)
-                   .OnDelete(DeleteBehavior.Restrict);
 
-            
-            builder.HasIndex(p => p.Nome);
-            builder.HasIndex(p => p.CategoriaId);
+            // Mapeia o relacionamento e indica o uso do backing field privado
+            builder.HasMany(p => p.CategoriaProdutos)
+                .WithOne(cp => cp.Produto)
+                .HasForeignKey(cp => cp.ProdutoId);
+
+            builder.Navigation(p => p.CategoriaProdutos)
+                .UsePropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

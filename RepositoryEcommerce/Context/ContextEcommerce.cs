@@ -28,6 +28,8 @@ namespace RepositoryEcommerce.Context
 
         public DbSet<Usuario> Usuarios { get; set; }
 
+        public DbSet<CategoriaProduto> CategoriaProdutos { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
