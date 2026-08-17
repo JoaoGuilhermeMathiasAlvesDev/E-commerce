@@ -11,7 +11,11 @@ namespace RepositoryEcommerce.Mapping
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
         {
-           
+
+            builder.HasDiscriminator<string>("TipoUsuario")
+                .HasValue<Cliente>("Cliente")
+                .HasValue<Funcionario>("Funcionario");
+
             builder.Property(u => u.Nome)
                    .IsRequired()
                    .HasMaxLength(100);

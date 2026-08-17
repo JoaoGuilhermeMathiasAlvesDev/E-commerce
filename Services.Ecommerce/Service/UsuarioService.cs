@@ -1,7 +1,4 @@
 ﻿using Services.Ecommerce.IService;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Services.Ecommerce.Service
 {
@@ -9,3 +6,4 @@ namespace Services.Ecommerce.Service
     {
     }
 }
+
