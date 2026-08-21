@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Services.Ecommerce.Models
 {
-    public record Login
+    public class Login
     {
-        string Email;
-        string Senha;
+        public string Email { get; set; }
+        public string Senha { get; set; }
     }
 }
