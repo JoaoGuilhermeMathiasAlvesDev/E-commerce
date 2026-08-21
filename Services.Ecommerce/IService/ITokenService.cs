@@ -7,6 +7,6 @@ namespace Services.Ecommerce.IService
 {
     public interface ITokenService
     {
-        string GerarToken(Usuario usuario);
+        Task<string> GerarToken(Usuario usuario);
     }
 }
