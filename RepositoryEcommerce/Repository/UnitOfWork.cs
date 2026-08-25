@@ -1,4 +1,6 @@
-﻿using RepositoryEcommerce.IRepository;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using RepositoryEcommerce.Context;
+using RepositoryEcommerce.IRepository;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,24 +9,72 @@ namespace RepositoryEcommerce.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public Task BeginTransactionAsync()
+        private readonly ContextEcommerce _contexto;
+        private IDbContextTransaction _transaction;
+
+        public UnitOfWork(ContextEcommerce contexto)
         {
-            throw new NotImplementedException();
+            _contexto = contexto;
+           
         }
 
-        public Task CommitTransactionAsync()
+        public async Task BeginTransactionAsync()
         {
-            throw new NotImplementedException();
+           if( _transaction == null ) 
+                _transaction =  await _contexto.Database.BeginTransactionAsync();
         }
 
-        public Task<int> CompleteAsync()
+        public async Task<bool> CommitTransactionAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var sucess = await _contexto.SaveChangesAsync() > 0; 
+                if(_transaction  != null)
+                {
+                   await _transaction.CommitAsync();
+                    await DisposeTransactionAsync();
+                }
+
+                return sucess;
+            }
+            catch (Exception)
+            {
+
+                if (_transaction != null)
+                {
+                    await _transaction.RollbackAsync();
+                    await DisposeTransactionAsync(); 
+                }
+                return false;
+            }
+        }
+
+        public async Task<int> CompleteAsync()
+        {
+           return await _contexto.SaveChangesAsync();
         }
 
         public void Rollback()
         {
-            throw new NotImplementedException();
+            if (_transaction != null)
+            {
+                _transaction.Rollback();
+                DisposeTransaction();
+            }
+        }
+
+        private void DisposeTransaction()
+        {
+            _transaction?.Dispose();
+            _transaction = null;
+        }
+        private async Task DisposeTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.DisposeAsync();
+                _transaction = null; 
+            }
         }
     }
 }

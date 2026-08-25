@@ -1,4 +1,5 @@
 ﻿using DominioEcommerce.EntityBase;
+using Microsoft.EntityFrameworkCore;
 using RepositoryEcommerce.Context;
 using RepositoryEcommerce.IRepository;
 using System;
@@ -9,41 +10,47 @@ namespace RepositoryEcommerce.Repository
 {
     public class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : EntityBase
     {
-        private ContextEcommerce  _context;
+        protected readonly ContextEcommerce _context;
+        protected readonly DbSet<TEntity> _dbSet;
 
         public RepositoryBase(ContextEcommerce context)
         {
             _context = context;
+            _dbSet = _context.Set<TEntity>();
         }
 
-        public Task Adicionar(TEntity obj)
+        public async Task Adicionar(TEntity obj)
         {
-            throw new NotImplementedException();
+            await _dbSet.AddAsync(obj);
         }
 
         public void Atualizar(TEntity obj)
         {
-            throw new NotImplementedException();
+             _dbSet.Update(obj);
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+           _context?.Dispose();
         }
 
-        public Task<TEntity> ObterPorId(Guid id)
+        public async Task<TEntity> ObterPorId(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbSet.AsNoTracking().FirstOrDefaultAsync(x=> x.Id == id);
         }
 
-        public Task<List<TEntity>> ObterTodos()
+        public async Task<List<TEntity>> ObterTodos()
         {
-            throw new NotImplementedException();
+           return await _dbSet.AsNoTracking().ToListAsync();
         }
 
         public void Remover(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = _dbSet.Find(id);
+
+            if(entity != null) 
+              _dbSet.Remove(entity);
         }
+
     }
 }

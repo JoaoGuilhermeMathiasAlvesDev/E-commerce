@@ -7,7 +7,7 @@ namespace RepositoryEcommerce.IRepository
     public interface IUnitOfWork
     {
         Task BeginTransactionAsync();
-        Task CommitTransactionAsync();
+        Task<bool> CommitTransactionAsync();
         Task<int> CompleteAsync();
         void Rollback();
     }

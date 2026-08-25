@@ -1,4 +1,5 @@
 ﻿using DominioEcommerce.Enum;
+using DominioEcommerce.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace DominioEcommerce.Entitidades
 {
-    public abstract class Usuario : IdentityUser<Guid>
+    public  class Usuario : IdentityUser<Guid>
     {
         public string Nome { get; private set; } = string.Empty;
         public string SobreNome { get; private set; } = string.Empty;
@@ -25,6 +26,23 @@ namespace DominioEcommerce.Entitidades
             ValidarEInicializar(nome, sobreNome, dataNascimento, role, email, phoneNumber, senha);
         }
 
+
+        public void AtualizarDados(string nome, string sobreNome, DateTime dataNascimento, string phoneNumber)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+                throw new DominioException.DominioException("Nome é obrigatório.", new List<string> { "Nome é obrigatório." });
+            if (string.IsNullOrWhiteSpace(sobreNome))
+                throw new DominioException.DominioException("Sobrenome é obrigatório.", new List<string> { "Sobrenome é obrigatório." });
+            if (dataNascimento > DateTime.Now)
+                throw new DominioException.DominioException("Data de nascimento inválida.", new List<string> { "Data de nascimento inválida." });
+            if (string.IsNullOrWhiteSpace(phoneNumber))
+                throw new DominioException.DominioException("Número de telefone é obrigatório.", new List<string> { "Número de telefone é obrigatório." });
+
+            Nome = nome;
+            SobreNome = sobreNome;
+            DataNascimento = dataNascimento;
+            PhoneNumber = phoneNumber;
+        }
         public void Ativar() => Ativo = true;
 
         public void Desativar() => Ativo = false;
