@@ -43,7 +43,6 @@ namespace DominioEcommerce.Entitidades
         private void ValidarEInicializar(Guid clienteId, string nomeCliente, string telefoneCliente, string emailCliente,
                                          Endereco enderecoEntrega, decimal valorFrete, MetodoPagamento metodoPagamento, string? observacoesEntrega)
         {
-            // 1. Validações de Domínio
             if (clienteId == Guid.Empty)
                 throw new DominioException.DominioException("O identificador do cliente é obrigatório.",
                     new List<string> { "Cliente inválido." });

@@ -1,4 +1,7 @@
-﻿using RepositoryEcommerce.IRepository;
+﻿using DominioEcommerce.Entitidades;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using RepositoryEcommerce.IRepository;
 using Services.Ecommerce.IService;
 using Services.Ecommerce.Models;
 
@@ -6,31 +9,77 @@ namespace Services.Ecommerce.Service
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly UserManager<Usuario> _userManager;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository)
+        public UsuarioService(UserManager<Usuario> userManager)
         {
-            _usuarioRepository = usuarioRepository;
+            _userManager = userManager;
         }
 
-        public Task AtivarUsuarioAsync(Guid id)
+        public async Task AtivarUsuarioAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var obterUsuario = await _userManager.FindByIdAsync(id.ToString());
+
+            if (obterUsuario == null)
+                throw new KeyNotFoundException($"Usuario com {id} não encontrado.");
+
+            obterUsuario.Ativar();
+
+            var sucesso = await _userManager.UpdateAsync(obterUsuario);
+
+            if(!sucesso.Succeeded)
+                throw new InvalidOperationException(
+                                    string.Join("; ", sucesso.Errors.Select(e => e.Description)));
         }
 
-        public Task DesativarUsuarioAsync(Guid id)
+        public async Task AtualizarDadosAsync(Guid id, AtualizarUsuarioModel model)
         {
-            throw new NotImplementedException();
+            var obterUsuario = await _userManager.FindByIdAsync(id.ToString());
+
+            if (obterUsuario == null)
+                throw new KeyNotFoundException($"Usuario com {id} não encontrado.");
+
+            obterUsuario.AtualizarDados(model.Nome, model.Sobrenome, model.DataNascimento, model.PhoneNumber);
+
+            var sucesso = await _userManager.UpdateAsync(obterUsuario);
+
+            if (!sucesso.Succeeded)
+                throw new InvalidOperationException(
+                                    string.Join("; ", sucesso.Errors.Select(e => e.Description)));
         }
 
-        public Task<UsuarioModel> ObterPorIdAsync(Guid id)
+        public async Task DesativarUsuarioAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var obterUsuario = await _userManager.FindByIdAsync(id.ToString());
+
+            if (obterUsuario == null)
+                throw new KeyNotFoundException($"Usuario com {id} não encontrado.");
+
+            obterUsuario.Desativar();
+
+            var sucesso = await _userManager.UpdateAsync(obterUsuario);
+
+            if (!sucesso.Succeeded)
+                throw new InvalidOperationException(
+                                    string.Join("; ", sucesso.Errors.Select(e => e.Description)));
+
         }
 
-        public Task<IEnumerable<UsuarioModel>> ObterTodosAsync()
+        public async Task<UsuarioModel> ObterPorIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var obterUsuario = await _userManager.FindByIdAsync(id.ToString());
+
+            if (obterUsuario == null)
+                throw new KeyNotFoundException($"Usuario com {id} não encontrado.");
+
+            return new UsuarioModel().ToModel(obterUsuario);
+        }
+
+        public async Task<IEnumerable<UsuarioModel>> ObterTodosAsync()
+        {
+            var usuarios = await _userManager.Users.ToListAsync();
+
+            return usuarios.Select(u => new UsuarioModel().ToModel(u));
         }
     }
 }

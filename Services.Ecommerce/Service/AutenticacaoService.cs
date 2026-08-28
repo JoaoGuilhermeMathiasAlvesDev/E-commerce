@@ -112,7 +112,7 @@ namespace Services.Ecommerce.Service
                 throw new DominioException("Erro ao registrar funcionário.", erros);
             }
 
-            await _userManager.AddToRoleAsync(funcionario, model.Role.ToString());
+            await _userManager.AddToRoleAsync(funcionario, roleEnum.ToString());
 
             return await _tokenService.GerarToken(funcionario);
         }
