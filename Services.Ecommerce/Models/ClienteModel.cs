@@ -1,33 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using DominioEcommerce.Entitidades;
 
 namespace Services.Ecommerce.Models
 {
     public record ClienteModel
     {
-        [Required(ErrorMessage = "O Nome é obrigatório.")]
-        public string Nome { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "O Sobrenome é obrigatório.")]
-        public string Sobrenome { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "A Data de Nascimento é obrigatória.")]
+        public string Id { get; init; } = string.Empty;
+        public string Nome { get; init; } = string.Empty;
+        public string Sobrenome { get; init; } = string.Empty;
         public DateTime DataNascimento { get; set; }
+        public string Email { get; init; } = string.Empty;
+        public string PhoneNumber { get; init; } = string.Empty;
+        public EnderecoModel? Endereco { get; init; }
 
-        [Required(ErrorMessage = "O Email é obrigatório.")]
-        [EmailAddress(ErrorMessage = "Email inválido.")]
-        public string Email { get; set; } = string.Empty;
+        public static ClienteModel ToModel(Cliente cliente)
+        {
+            if (cliente == null)
+                throw new ArgumentNullException(nameof(cliente));
 
-        [Required(ErrorMessage = "O Telefone é obrigatório.")]
-        public string PhoneNumber { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "A Senha é obrigatória.")]
-        [MinLength(6, ErrorMessage = "A Senha deve ter no mínimo 6 caracteres.")]
-        public string Senha { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "O Endereço é obrigatório.")]
-        public EnderecoModel Endereco { get; set; } = new();
+            return new ClienteModel
+            {
+                Id = cliente.Id.ToString(),
+                Nome = cliente.Nome,
+                Sobrenome = cliente.SobreNome,
+                Email = cliente.Email,
+                PhoneNumber = cliente.PhoneNumber,
+                Endereco = cliente.Endereco == null ? null : new EnderecoModel
+                {
+                    Logradouro = cliente.Endereco.Logradouro,
+                    Numero = cliente.Endereco.Numero,
+                    Complemento = cliente.Endereco.Complemento,
+                    Bairro = cliente.Endereco.Bairro,
+                    Cidade = cliente.Endereco.Cidade,
+                    Estado = cliente.Endereco.Estado,
+                    Cep = cliente.Endereco.Cep
+                }
+            };
+        }
     }
 }
