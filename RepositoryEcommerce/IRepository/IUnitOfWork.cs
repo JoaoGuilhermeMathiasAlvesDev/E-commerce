@@ -6,6 +6,8 @@ namespace RepositoryEcommerce.IRepository
 {
     public interface IUnitOfWork
     {
+        IFuncionarioRepository Funcionario { get; }
+        IClienteRepository Cliente { get; }
         Task BeginTransactionAsync();
         Task<bool> CommitTransactionAsync();
         Task<int> CompleteAsync();

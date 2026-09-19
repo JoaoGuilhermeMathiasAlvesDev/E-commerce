@@ -12,26 +12,33 @@ namespace RepositoryEcommerce.Repository
         private readonly ContextEcommerce _contexto;
         private IDbContextTransaction _transaction;
 
+        public IFuncionarioRepository Funcionario { get; private set; }
+
+        public IClienteRepository Cliente { get; private set; }
+
         public UnitOfWork(ContextEcommerce contexto)
         {
-            _contexto = contexto;
-           
+            _contexto = contexto ?? throw new ArgumentNullException(nameof(contexto));
+            Funcionario = new FuncionarioRepository(_contexto);
+            Cliente = new ClienteRepository(_contexto);
         }
+
+
 
         public async Task BeginTransactionAsync()
         {
-           if( _transaction == null ) 
-                _transaction =  await _contexto.Database.BeginTransactionAsync();
+            if (_transaction == null)
+                _transaction = await _contexto.Database.BeginTransactionAsync();
         }
 
         public async Task<bool> CommitTransactionAsync()
         {
             try
             {
-                var sucess = await _contexto.SaveChangesAsync() > 0; 
-                if(_transaction  != null)
+                var sucess = await _contexto.SaveChangesAsync() > 0;
+                if (_transaction != null)
                 {
-                   await _transaction.CommitAsync();
+                    await _transaction.CommitAsync();
                     await DisposeTransactionAsync();
                 }
 
@@ -43,7 +50,7 @@ namespace RepositoryEcommerce.Repository
                 if (_transaction != null)
                 {
                     await _transaction.RollbackAsync();
-                    await DisposeTransactionAsync(); 
+                    await DisposeTransactionAsync();
                 }
                 return false;
             }
@@ -51,7 +58,7 @@ namespace RepositoryEcommerce.Repository
 
         public async Task<int> CompleteAsync()
         {
-           return await _contexto.SaveChangesAsync();
+            return await _contexto.SaveChangesAsync();
         }
 
         public void Rollback()
@@ -73,7 +80,7 @@ namespace RepositoryEcommerce.Repository
             if (_transaction != null)
             {
                 await _transaction.DisposeAsync();
-                _transaction = null; 
+                _transaction = null;
             }
         }
     }

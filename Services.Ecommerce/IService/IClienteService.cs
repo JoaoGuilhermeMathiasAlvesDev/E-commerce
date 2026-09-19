@@ -15,5 +15,6 @@ namespace Services.Ecommerce.IService
         Task AtualizarAsync(ClienteModel cliente);
         Task AdicionarOuAtualizarEnderecoAsync(string clienteId, EnderecoModel endereco);
         Task AdicionarPedidoAsync(string clienteId, Pedido pedido);
+        Task<ClienteModel> CriarAsync(CriarClienteModel model);
     }
 }

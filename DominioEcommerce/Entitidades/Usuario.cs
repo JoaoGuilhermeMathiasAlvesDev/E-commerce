@@ -87,6 +87,11 @@ namespace DominioEcommerce.Entitidades
             Role = (RoleUsuario)role;
         }
 
+        public static bool VerificarSerExisteEmail(string email, List<string> dados)
+        {
+            return dados.Contains(email);
+        }
+
         private static void ValidarRole(int role)
         {
             if (!System.Enum.IsDefined(typeof(RoleUsuario), role))

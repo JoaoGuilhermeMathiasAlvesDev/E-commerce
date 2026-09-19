@@ -4,6 +4,7 @@ using DominioEcommerce.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RepositoryEcommerce.IRepository;
 using Services.Ecommerce.IService;
 using Services.Ecommerce.Models;
 using System;
@@ -15,11 +16,13 @@ namespace Services.Ecommerce.Service
     public class ClienteService : IClienteService
     {
         private readonly UserManager<Usuario> _userManager;
+        private readonly IClienteRepository _clienteRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public ClienteService(UserManager<Usuario> userManager, IHttpContextAccessor httpContextAccessor)
+        public ClienteService(UserManager<Usuario> userManager, IHttpContextAccessor httpContextAccessor, IClienteRepository clienteRepository)
         {
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _clienteRepository = clienteRepository;
         }
 
         public async Task AdicionarOuAtualizarEnderecoAsync(string clienteId, EnderecoModel endereco)
@@ -59,7 +62,7 @@ namespace Services.Ecommerce.Service
         }
 
 
-        public async Task AtualizarAsync( ClienteModel cliente)
+        public async Task AtualizarAsync(ClienteModel cliente)
         {
             var clienteExiste = await _userManager.FindByIdAsync(cliente.Id.ToString());
             if (clienteExiste == null)
@@ -83,6 +86,49 @@ namespace Services.Ecommerce.Service
                 var erros = string.Join(" | ", sucesso.Errors.Select(e => e.Description));
                 throw new Exception($"Erro ao atualizar endereço: {erros}");
             }
+
+        }
+
+        public async Task<ClienteModel> CriarAsync(CriarClienteModel model)
+        {
+            var emailsRegistrados = await _clienteRepository.ObterTodosEmails();
+
+            var verificarEmail = Usuario.VerificarSerExisteEmail(model.Email, emailsRegistrados);
+
+            if (verificarEmail)
+                throw new DominioException("E-mail já registrado.",
+                             new List<string> { "E-mail já registrado." });
+
+            var endereco = new Endereco(
+                    model.Endereco.Logradouro,
+                    model.Endereco.Numero,
+                    model.Endereco.Complemento,
+                    model.Endereco.Bairro,
+                    model.Endereco.Cidade,
+                    model.Endereco.Estado,
+                    model.Endereco.Cep
+                );
+
+
+             var cliente = new Cliente(
+                   model.Nome,
+                   model.Sobrenome,
+                   model.DataNascimento,
+                   model.Email,
+                   model.PhoneNumber,
+                   model.Senha,
+                   endereco
+                );
+
+            var sucesso = await _userManager.CreateAsync(cliente, model.Senha);
+
+            if (!sucesso.Succeeded)
+            {
+                var erros = sucesso.Errors.Select(e => e.Description).ToList();
+                throw new DominioException("Erro ao cadastrar cliente.", erros);
+            }
+
+            return ClienteModel.ToModel(cliente);
 
         }
 

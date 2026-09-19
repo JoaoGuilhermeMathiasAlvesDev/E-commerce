@@ -13,14 +13,14 @@ namespace DominioEcommerce.Entitidades
 
         public Endereco Endereco { get; private set; }
 
-        public Funcionario() : base()
+        protected Funcionario() : base()
         {
 
         }
 
         public Funcionario(string nome, string sobreNome, DateTime dataNascimento, string email,
-             string phoneNumber, string senha, string matricula, Endereco endereco, RoleUsuario role)
-            : base(nome, sobreNome, dataNascimento, email, (int)role, phoneNumber, senha)
+             string phoneNumber, string senha, string matricula, Endereco endereco)
+            : base(nome, sobreNome, dataNascimento, email, (int)RoleUsuario.Funcionario, phoneNumber, senha)
         {
             if (string.IsNullOrWhiteSpace(matricula))
                 throw new DominioException.DominioException("Matrícula é obrigatória.",
@@ -30,16 +30,16 @@ namespace DominioEcommerce.Entitidades
             AdicionarOuAtualizarEndereco(endereco);
         }
 
-        public void CriarMatricula(string matricula, string ultimaMatricula)
+        public static string CriarMatricula(string matricula, string ultimaMatricula)
         {
             if (string.IsNullOrWhiteSpace(matricula))
                 throw new DominioException.DominioException("Matrícula é obrigatória.",
                     new List<string> { "Matrícula é obrigatória." });
-            Matricula = matricula.Trim();
+            return matricula.Trim();
         }
 
 
-        public void AdicionarOuAtualizarEndereco(Endereco endereco)
+        public  void AdicionarOuAtualizarEndereco(Endereco endereco)
         {
             if (endereco == null)
             {
@@ -47,6 +47,7 @@ namespace DominioEcommerce.Entitidades
                     new List<string> { "Endereço não pode ser nulo." });
             }
             Endereco = endereco;
+            
         }
     }
 }

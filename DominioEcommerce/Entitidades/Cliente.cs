@@ -2,6 +2,7 @@
 using DominioEcommerce.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DominioEcommerce.Entitidades
@@ -13,15 +14,16 @@ namespace DominioEcommerce.Entitidades
 
         public IReadOnlyCollection<Pedido> Pedidos => _pedidos.AsReadOnly();
 
-        public Cliente() : base() 
+        protected Cliente() : base() 
         {
             
         }
 
         public Cliente(string nome, string sobreNome, DateTime dataNascimento, string email,
-            string phoneNumber, string senha, Endereco endereco)
-            : base(nome, sobreNome, dataNascimento, email, (int)RoleUsuario.Cliente, phoneNumber, senha)
+        string phoneNumber, string senha, Endereco endereco)
+        : base(nome, sobreNome, dataNascimento, email, (int)RoleUsuario.Cliente, phoneNumber, senha)
         {
+            AdicionarOuAtualizarEndereco(endereco);
         }
 
         public void AdicionarOuAtualizarEndereco(Endereco endereco)
@@ -44,5 +46,6 @@ namespace DominioEcommerce.Entitidades
 
             _pedidos.Add(pedido);
         }
+
     }
 }
