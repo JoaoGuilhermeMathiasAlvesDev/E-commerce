@@ -8,10 +8,10 @@ namespace Services.Ecommerce.IService
 {
     public interface IFuncionarioSerivice
     {
-        Task<Funcionario> ObterPorIdAsync(Guid id);
+        Task<FuncionarioResponseModel> ObterPorIdAsync(Guid id);
         Task<IEnumerable<FuncionarioResponseModel>> ListarAsync();
         Task<FuncionarioResponseModel> AdicionarAsync(RegistrarFuncionarioModel funcionario);
-        void Atualizar(RegistrarFuncionarioModel funcionario);
+        Task Atualizar(FuncionarioResponseModel funcionario);
         Task<int> SalvarAsync();
     }
 }

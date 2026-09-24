@@ -69,26 +69,47 @@ namespace Services.Ecommerce.Service
             }
         }
 
-        public void Atualizar(RegistrarFuncionarioModel funcionario)
+        public async Task Atualizar(FuncionarioResponseModel funcionario)
         {
-            throw new NotImplementedException();
+           var obterUsuario = await _unitOfWork.Funcionario.ObterPorId(funcionario.Id);
+            if (obterUsuario == null)
+                throw new DominioException("Funcionário não encontrado.",
+                    new List<string> { "Funcionário não encontrado." });
+
+
+            obterUsuario.AtualizarDados(funcionario.Nome, funcionario.SobreNome,funcionario.DataNascimento,funcionario.PhoneNumber);
+           var resultado = await _userManager.UpdateAsync(obterUsuario);
+
+            if (!resultado.Succeeded)
+            {
+                var erros = resultado.Errors.Select(e => e.Description).ToList();
+                throw new DominioException("Erro ao cadastrar funcionário.", erros);
+            }
         }
 
 
-        public Task<IEnumerable<FuncionarioResponseModel>> ListarAsync()
+        public async Task<IEnumerable<FuncionarioResponseModel>> ListarAsync()
         {
-            throw new NotImplementedException();
+            var obterTodosFuncionarios = await _unitOfWork.Funcionario.Listar();
+
+            return obterTodosFuncionarios.Select(f => FuncionarioResponseModel.De(f));
         }
 
-        public Task<Funcionario> ObterPorIdAsync(Guid id)
+        public async Task<FuncionarioResponseModel> ObterPorIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var funcionario = await _unitOfWork.Funcionario.ObterPorId(id);
+
+            if (funcionario == null)
+                throw new DominioException("Funcionário não encontrado.",
+                    new List<string> { "Funcionário não encontrado." });
+
+            return FuncionarioResponseModel.De(funcionario);
         }
 
 
-        public Task<int> SalvarAsync()
+        public async Task<int> SalvarAsync()
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.CompleteAsync();
         }
     }
 }
