@@ -8,6 +8,14 @@ namespace RepositoryEcommerce.IRepository
     {
         IFuncionarioRepository Funcionario { get; }
         IClienteRepository Cliente { get; }
+
+        ICategoriaProdutoRepository CategoriaProduto { get; }
+        ICategoriaRepository Categoria { get; }
+        IPedidoRepository Pedido { get; }
+        IProdutoRepository Produto { get; }
+
+        IItemPedidoRepository ItemPedido { get; }
+
         Task BeginTransactionAsync();
         Task<bool> CommitTransactionAsync();
         Task<int> CompleteAsync();
