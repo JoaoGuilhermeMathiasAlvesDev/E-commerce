@@ -16,6 +16,16 @@ namespace RepositoryEcommerce.Repository
 
         public IClienteRepository Cliente { get; private set; }
 
+        public ICategoriaProdutoRepository CategoriaProduto => throw new NotImplementedException();
+
+        public ICategoriaRepository Categoria => throw new NotImplementedException();
+
+        public IPedidoRepository Pedido => throw new NotImplementedException();
+
+        public IProdutoRepository Produto => throw new NotImplementedException();
+
+        public IItemPedidoRepository ItemPedido => throw new NotImplementedException();
+
         public UnitOfWork(ContextEcommerce contexto)
         {
             _contexto = contexto ?? throw new ArgumentNullException(nameof(contexto));
@@ -81,6 +91,29 @@ namespace RepositoryEcommerce.Repository
             {
                 await _transaction.DisposeAsync();
                 _transaction = null;
+            }
+        }
+
+        public async Task SalvarAsync()
+        {
+
+            try
+            {
+                await CompleteAsync();                 
+
+                if (_transaction != null)
+                    await _transaction.CommitAsync();  
+            }
+            catch
+            {
+                if (_transaction != null)
+                    await _transaction.RollbackAsync();
+
+                throw;                              
+            }
+            finally
+            {
+                await DisposeTransactionAsync();
             }
         }
     }

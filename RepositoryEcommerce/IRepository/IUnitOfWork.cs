@@ -20,5 +20,7 @@ namespace RepositoryEcommerce.IRepository
         Task<bool> CommitTransactionAsync();
         Task<int> CompleteAsync();
         void Rollback();
+
+        Task SalvarAsync();
     }
 }
