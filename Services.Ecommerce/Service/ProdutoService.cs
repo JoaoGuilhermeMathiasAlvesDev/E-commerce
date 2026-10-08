@@ -50,8 +50,6 @@ namespace Services.Ecommerce.Service
             _unitOfWork.Produto.Atualizar(produto);
 
             await _unitOfWork.SalvarAsync();
-
-            return ;
         }
 
         public async Task<ProdutoResponseModel> AtualizarAsync(Guid id, AtualizarProdutoModel model)
@@ -81,9 +79,15 @@ namespace Services.Ecommerce.Service
             return ProdutoResponseModel.De(produto);    
         }
 
-        public Task DesativarAsync(Guid id)
+        public async Task DesativarAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var produto = await _unitOfWork.Produto.ObterPorId(id);
+            
+            produto.Desativar();
+
+            _unitOfWork.Produto.Atualizar(produto);
+
+            await _unitOfWork.SalvarAsync();
         }
 
         public async Task<ProdutoResponseModel> ObterPorIdAsync(Guid id)
