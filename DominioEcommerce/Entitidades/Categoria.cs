@@ -47,6 +47,13 @@ namespace DominioEcommerce.Entitidades
             _categoriaProdutos.Add(new CategoriaProduto(categoriaId, this.Id));
         }
 
+        public void AtualizarNome(string nome)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+                throw new ArgumentException("O nome da categoria não pode ser vazio.", nameof(nome));
+            Nome = nome;
+        }
+
         public void RemoverCategoria(Guid categoriaId)
         {
             _categoriaProdutos.RemoveAll(cp => cp.CategoriaId == categoriaId);
