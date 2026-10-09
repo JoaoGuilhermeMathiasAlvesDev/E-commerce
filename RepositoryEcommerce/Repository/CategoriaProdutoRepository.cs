@@ -1,4 +1,5 @@
 ﻿using DominioEcommerce.Entitidades;
+using Microsoft.EntityFrameworkCore;
 using RepositoryEcommerce.Context;
 using RepositoryEcommerce.IRepository;
 using System;
@@ -13,5 +14,6 @@ namespace RepositoryEcommerce.Repository
         {
             
         }
+
     }
 }

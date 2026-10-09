@@ -1,4 +1,5 @@
 ﻿using DominioEcommerce.Entitidades;
+using Microsoft.EntityFrameworkCore;
 using RepositoryEcommerce.Context;
 using RepositoryEcommerce.IRepository;
 using System;
@@ -12,6 +13,11 @@ namespace RepositoryEcommerce.Repository
         public CategoriaRepository(ContextEcommerce context) : base(context)
         {
             
+        }
+
+        public async Task<IEnumerable<Categoria>> ObterPorIdsAsync(IEnumerable<Guid> ids)
+        {
+            return await _context.Categorias.Where(c => ids.Contains(c.Id)).ToListAsync();  
         }
     }
 }
