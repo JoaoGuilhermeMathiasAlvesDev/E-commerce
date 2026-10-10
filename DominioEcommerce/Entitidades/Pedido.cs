@@ -2,7 +2,7 @@
 using DominioEcommerce.ValueObjects;
 using System;
 using System.Collections.Generic;
-using System.Linq; // 💡 Correção: Adicionado para liberar o FirstOrDefault, Any e Sum
+using System.Linq; 
 
 namespace DominioEcommerce.Entitidades
 {

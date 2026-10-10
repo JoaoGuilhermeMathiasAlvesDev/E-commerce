@@ -7,5 +7,6 @@ namespace RepositoryEcommerce.IRepository
 {
     public interface IPedidoRepository : IRepositoryBase<Pedido>
     {
+        Task<IEnumerable<Pedido?>> ObterPedidosClienteAsync(Guid clienteId);
     }
 }
